@@ -1,6 +1,76 @@
-[package]
-name = "pysme"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+resolver = "2"
+members = [
+    "crates/pysme-build",
+    "crates/pysme-cli",
+    "crates/pysme-codegen",
+    "crates/pysme-core",
+    "crates/pysme-parser",
+    "crates/pysme-server",
+    "crates/pysme-runtime",
+]
 
-[dependencies]
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Azman Athar azmanathar.1976@gmail.com"]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/azmanathar1976/PySME"
+homepage = "https://pysme.dev"
+description = "A Python full-stack framework that compiles to WASM"
+keywords = ["python", "wasm", "web", "framework", "reactive"]
+categories = ["wasm", "web-programming"]
+rust-version = "1.75"
+
+[workspace.dependencies]
+anyhow = "1.0"
+thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.0", features = ["v4"] }
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+futures = "0.3"
+async-trait = "0.1"
+
+clap ={ version = "4.0", features = ["derive"] }
+toml = "0.9"
+
+pysme-build = { path = "crates/pysme-build" }
+pysme-codegen = { path = "crates/pysme-codegen" }
+pysme-core = { path = "crates/pysme-core" }
+pysme-parser = { path = "crates/pysme-parser" }
+pysme-server = { path = "crates/pysme-server" }
+pysme-runtime = { path = "crates/pysme-runtime" }
+
+[[bin]]
+name = "PySME"
+path = "crates/pysme-cli/src/main.rs"
+
+[profile.dev]
+opt-level = 0
+debug = true
+split-debuginfo = "unpacked"
+strip = "none"
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+incremental = false
+codegen-units = 1
+
+[profile.release-with-debug]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.dev-fast]
+inherits = "dev"
+opt-level = 1
+incremental = true
+debug-assertions = false
+overflow-checks = false
