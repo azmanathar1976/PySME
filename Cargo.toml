@@ -47,10 +47,6 @@ pysme-parser = { path = "crates/pysme-parser" }
 pysme-server = { path = "crates/pysme-server" }
 pysme-runtime = { path = "crates/pysme-runtime" }
 
-[[bin]]
-name = "PySME"
-path = "crates/pysme-cli/src/main.rs"
-
 [profile.dev]
 opt-level = 0
 debug = true
