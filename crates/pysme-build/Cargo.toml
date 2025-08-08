@@ -8,6 +8,7 @@ repository.workspace = true
 description = "Build system for PySme applications"
 
 [dependencies]
+sqlx.workspace = true
 pysme-core.workspace = true
 pysme-parser.workspace = true
 pysme-codegen.workspace = true

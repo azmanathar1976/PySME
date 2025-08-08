@@ -13,6 +13,7 @@ anyhow.workspace = true
 thiserror.workspace = true
 serde.workspace = true
 tracing.workspace = true
+sqlx.workspace = true
 
 rustpython-parser = "0.4"
 rustpython-ast = "0.4"
