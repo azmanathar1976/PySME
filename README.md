@@ -8,7 +8,7 @@ PySME is a modern Python full-stack framework that compiles to WebAssembly (WASM
 ## Features
 
 - **Python-First**: Write your entire application in Python - frontend, backend, and database models
-- **WASM Compilation**: Compiles to WebAssembly for high-performance client-side execution
+- **WASM Compilation**: Compiles to WebAssembly using Rust for high-performance client-side execution
 - **Component-Based Architecture**: Svelte-inspired component system with clear separation of concerns
 - **Built-in Tailwind Integration**: First-class support for Tailwind CSS
 - **Reactive State Management**: Simple and powerful reactivity system
