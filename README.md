@@ -153,6 +153,70 @@ class User(ModelMaker):
     posts: List['Post'] = HasMany('Post', foreign_key='author_id')
 ```
 
+## Global Stores
+
+Manage global state with Svelte/Redux-inspired stores:
+
+```python
+# stores/user.store.py
+from pysme.frontend.globalStores import Store, StoreActions 
+from ..models.user import User 
+from typing import Optional 
+
+class UserStore(Store[Optional[User]]): 
+    def __init__(self): 
+        super().__init__(initial_value=None) 
+    
+    @StoreActions 
+    class Actions: 
+        def login(self, user: User): 
+            self.set(user) 
+            localStorage.setItem('user_token', user.token) 
+        
+        def logout(self): 
+            self.set(None) 
+            localStorage.removeItem('user_token') 
+        
+        def update_profile(self, updates: dict): 
+            if self.value: 
+                updated_user = {**self.value.__dict__, **updates} 
+                self.set(User.from_dict(updated_user)) 
+
+user_store = UserStore()
+```
+
+## Configuration
+
+Configure your PySME application with a simple Python configuration file:
+
+```python
+# pysme.config.py
+from pysme.build.config import BuildConfig, TailwindConfig 
+
+build_config = BuildConfig( 
+    entry_point='pages/index.component.pysme', 
+    output_dir='dist', 
+    static_dir='static', 
+    wasm_target='web', 
+    optimization_level='release', 
+    bundle_splitting=True, 
+    tree_shaking=True 
+) 
+
+tailwind_config = TailwindConfig( 
+    content=['**/*.pysme', '**/*.py'], 
+    theme={ 
+        'extend': { 
+            'colors': { 
+                'primary': '#3b82f6', 
+                'secondary': '#64748b' 
+            } 
+        } 
+    }, 
+    plugins=['@tailwindcss/forms', '@tailwindcss/typography'] 
+)
+```
+
 ## Project Structure
 
 ```
@@ -163,9 +227,10 @@ my-app/
 │   ├── models/           # Database models
 │   ├── pages/            # Page components (routing)
 │   ├── routes/           # API routes
+│   ├── stores/           # Global state stores
 │   └── utils/            # Utility functions
 ├── public/               # Static assets
-├── pysme.config.toml     # PySME configuration
+├── pysme.config.py       # PySME configuration
 └── README.md
 ```
 
