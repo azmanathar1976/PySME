@@ -1,7 +1,7 @@
 # pysme.config.py (or sample_module.py for testing)
 
-from pysme.build.config import BuildConfig
-from pysme.build.tailwind import TailwindConfig
+from pysme.builder.config import BuildConfig
+from pysme.builder.tailwind import TailwindConfig
 
 # Core build configuration
 build_config = BuildConfig(

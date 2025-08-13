@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 import json
 
 from .utils.logging import logger, configure_logging
-from .build.config import BuildConfig
-from .build.tailwind import TailwindConfig
+from .builder.config import BuildConfig
+from .builder.tailwind import TailwindConfig
 
 DEFAULT_CONFIG_FILENAME = "pysme.config.py"
 _MODULE_NAME = "pysme_user_config"
