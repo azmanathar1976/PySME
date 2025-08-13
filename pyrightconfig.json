@@ -1,0 +1,6 @@
+{
+    "include": ["pysme"],
+    "typeCheckingMode": "strict",
+    "reportMissingTypeStubs": false,
+    "reportUnknownMemberType": true
+}

@@ -1,0 +1,17 @@
+<code>
+    from pysme.routing import navigate
+    welcome_message: str = "Hello PySme!"
+</code>
+
+<render>
+    from pysme.frontend.basecomp import Div, H1, Button
+    
+    @Div(cls_names='flex flex-col items-center justify-center min-h-screen')
+        @H1(cls_names='text-5xl font-bold mb-6', text=welcome_message)
+        @Button(
+            cls_names='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded',
+            onclick=lambda: navigate('/about'),
+            text="About PySme"
+        )
+    def render(): pass
+</render>

@@ -1,0 +1,51 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "pysme"
+version = "0.1.0-alpha.1"
+description = "Python-first, Svelte-inspired full-stack framework — compiled to WASM, powered by Tailwind."
+authors = [
+    { name = "Az Athar", email = "azmanathar.1976@gmail.com" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+keywords = ["python", "wasm", "frontend", "framework", "tailwind", "fullstack"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Rust",
+    "License :: OSI Approved :: MIT License",
+    "Framework :: AsyncIO",
+    "Development Status :: 3 - Alpha",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourname/pysme"
+Documentation = "https://yourname.github.io/pysme"
+Repository = "https://github.com/yourname/pysme"
+Issues = "https://github.com/yourname/pysme/issues"
+
+[tool.maturin]
+bindings = "pyo3"
+strip = true
+features = ["pysme-wasm"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.scripts]
+run-tests = "pytest:main"
+run-example = "pysme.sample:hello"
+
+[tool.poetry.group.dev.dependencies] # modern poetry style
+pytest = "^8.0"
+mypy = "^1.0"
+pyright = "^1.1"
+black = "^25.0"
+ruff = "^0.12"
+
+[tool.pysme]
+default-layout = "app.layout.pysme"
+static-dir = "static"

@@ -1,5 +1,9 @@
 # PySme
 
+![Build](https://github.com/yourname/pysme/actions/workflows/ci.yml/badge.svg)
+![Coverage](https://img.shields.io/codecov/c/github/yourname/pysme)
+![Docs](https://img.shields.io/badge/docs-online-blue)
+
 > Python-first, Svelte-inspired full-stack framework — compiled to WASM, powered by Tailwind.
 
 ## Vision
@@ -30,5 +34,10 @@ PySme aims to bring the productivity of Python to modern, reactive, single-page 
 - Abstracting away Tailwind — it’s required and central to the styling system.
 - Compiling arbitrary Python standard library modules to WASM (only a curated subset will work client-side).
 
+## Versioning
+PySme uses [Semantic Versioning 2.0.0](https://semver.org/).
+Releases are tagged as vMAJOR.MINOR.PATCH.
+Pre-release tags use `alpha`, `beta`, or `rc` suffixes.
+
 ## License
-MIT — see [LICENSE](LICENSE) for details.
+MIT — see [MIT](LICENSE) for details.
