@@ -1,4 +1,4 @@
-# pyright: reportUnknownVariableType=false
+# pyright: basic
 
 from __future__ import annotations
 import importlib.util
@@ -12,6 +12,9 @@ import json
 from .utils.logging import logger, configure_logging
 from .builder.config import BuildConfig
 from .builder.tailwind import TailwindConfig
+from .errors import config_load_error, exception_to_dict
+from .utils.paths import resolve_path
+from .utils.io_helpers import read_json, read_yaml
 
 DEFAULT_CONFIG_FILENAME = "pysme.config.py"
 _MODULE_NAME = "pysme_user_config"
@@ -87,6 +90,15 @@ def _apply_env_overrides(build: BuildConfig, tailwind: TailwindConfig) -> None:
             tailwind.plugins = plugins_list
 
 
+def _load_json_or_yaml(path: Path) -> Dict[str, Any]:
+    if path.suffix.lower() == ".json":
+        return read_json(path)
+    elif path.suffix.lower() in {".yml", ".yaml"}:
+        return read_yaml(path)
+    else:
+        raise ValueError(f"Unsupported config file format: {path.suffix}")
+
+
 def _make_defaults() -> LoadedConfigs:
     return LoadedConfigs(build=BuildConfig(), tailwind=TailwindConfig(), raw={})
 
@@ -103,7 +115,7 @@ def load_pysme_config(
       - debug (bool) — will be applied to logging if present
       - other top-level variables (collected into raw)
     """
-    path = Path(config_path)
+    path = resolve_path(config_path)
     if not path.exists():
         logger.info("No %s found, using default config", config_path)
         cfgs = _make_defaults()
@@ -112,6 +124,24 @@ def load_pysme_config(
         # Configure env based on env only
         configure_logging()
         return cfgs
+
+    if path.suffix.lower() in {".json", ".yml", ".yaml"}:
+        try:
+            raw_vars = _load_json_or_yaml(path)
+        except Exception as exc:
+            logger.error(
+                "Error loading JSON/YAML config %s: %s", path, exc, exc_info=True
+            )
+            return _make_defaults()
+
+        build_conf = BuildConfig.from_dict(raw_vars.get("build_config", {}))
+        tailwind_conf = TailwindConfig.from_dict(raw_vars.get("tailwind_config", {}))
+
+        if apply_env:
+            _apply_env_overrides(build_conf, tailwind_conf)
+
+        configure_logging(debug=raw_vars.get("debug", None))
+        return LoadedConfigs(build=build_conf, tailwind=tailwind_conf, raw=raw_vars)
 
     # Unload previous module if present so reload works
     if _MODULE_NAME in sys.modules:
@@ -127,7 +157,11 @@ def load_pysme_config(
     try:
         spec.loader.exec_module(module)
     except Exception as exc:
-        logger.error("Error executing config file %s: %s", path, exc, exc_info=True)
+        err = config_load_error(str(path), exc)
+        logger.error("Config load failed: %s", err.code)
+        logger.debug(
+            "Config error details: %s", exception_to_dict(err, include_trace=True)
+        )
         return _make_defaults()
 
     raw_vars = {k: v for k, v in vars(module).items() if not k.startswith("_")}
@@ -137,7 +171,7 @@ def load_pysme_config(
     if isinstance(bc, BuildConfig):
         build_conf = bc
     elif isinstance(bc, dict):
-        build_conf = BuildConfig.from_dict(bc)  # type:ignore
+        build_conf = BuildConfig.from_dict(bc)
     elif bc is None:
         build_conf = BuildConfig()
     else:
@@ -147,7 +181,7 @@ def load_pysme_config(
     if isinstance(tc, TailwindConfig):
         tailwind_conf = tc
     elif isinstance(tc, dict):
-        tailwind_conf = TailwindConfig.from_dict(tc)  # type:ignore
+        tailwind_conf = TailwindConfig.from_dict(tc)
     elif tc is None:
         tailwind_conf = TailwindConfig()
     else:

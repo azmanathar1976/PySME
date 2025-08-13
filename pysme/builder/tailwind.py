@@ -1,4 +1,4 @@
-# pyright: reportUnknownVariableType=false
+# pyright: basic
 
 # pysme/build/tailwind.py
 from __future__ import annotations
@@ -24,7 +24,7 @@ def deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
     result: Dict[str, Any] = deepcopy(a)
     for k, v in b.items():
         if k in result and isinstance(result[k], Dict) and isinstance(v, Dict):
-            result[k] = deep_merge(result[k], v)  # type: ignore
+            result[k] = deep_merge(result[k], v)
         else:
             result[k] = deepcopy(v)
     return result
@@ -33,8 +33,8 @@ def deep_merge(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
 @dataclass
 class TailwindConfig:
     content: List[str] = field(default_factory=lambda: ["**/*.pysme", "**/*.py"])
-    theme: ThemeType = field(default_factory=dict)  # type: ignore
-    plugins: PluginList = field(default_factory=list)  # type: ignore
+    theme: ThemeType = field(default_factory=dict)
+    plugins: PluginList = field(default_factory=list)
 
     def merge(self, other: TailwindConfig) -> TailwindConfig:
         """
